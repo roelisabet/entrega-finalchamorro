@@ -1,99 +1,83 @@
- const btnCart = document.querySelector('.container-cart-icon');
-const containerCartProducts = document.querySelector(
-	'.container-cart-products'
-);
+const btnCart = document.querySelector('.container-cart-icon');
+const containerCartProducts = document.querySelector('.container-cart-products');
 
 btnCart.addEventListener('click', () => {
-	containerCartProducts.classList.toggle('hidden-card');
+    containerCartProducts.classList.toggle('hidden-card');
 });
-
 
 const cartInfo = document.querySelector('.cart-product');
 const rowProduct = document.querySelector('.row-product');
-
-
 const productsList = document.querySelector('.container-items');
-
-
 let allProducts = [];
-
 const valorTotal = document.querySelector('.total-pagar');
-
 const countProducts = document.querySelector('#contador-productos');
-
 const cartEmpty = document.querySelector('.cart-empty');
 const cartTotal = document.querySelector('.cart-total');
 
-productsList.addEventListener('click', e => {
-	if (e.target.classList.contains('btn-add-cart')) {
-		const product = e.target.parentElement;
+productsList.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-add-cart')) {
+        const product = e.target.parentElement;
 
-		const infoProduct = {
-			quantity: 1,
-			title: product.querySelector('h2').textContent,
-			price: product.querySelector('p').textContent,
-		};
+        const infoProduct = {
+            quantity: 1,
+            title: product.querySelector('h2').textContent,
+            price: product.querySelector('p').textContent,
+        };
 
-		const exits = allProducts.some(
-			product => product.title === infoProduct.title
-		);
+        const exists = allProducts.some((product) => product.title === infoProduct.title);
 
-		if (exits) {
-			const products = allProducts.map(product => {
-				if (product.title === infoProduct.title) {
-					product.quantity++;
-					return product;
-				} else {
-					return product;
-				}
-			});
-			allProducts = [...products];
-		} else {
-			allProducts = [...allProducts, infoProduct];
-		}
+        if (exists) {
+            const products = allProducts.map((product) => {
+                if (product.title === infoProduct.title) {
+                    product.quantity++;
+                    return product;
+                } else {
+                    return product;
+                }
+            });
+            allProducts = [...products];
+        } else {
+            allProducts = [...allProducts, infoProduct];
+        }
 
-		showHTML();
-	}
+        showHTML(allProducts);
+    }
 });
 
-rowProduct.addEventListener('click', e => {
-	if (e.target.classList.contains('icon-close')) {
-		const product = e.target.parentElement;
-		const title = product.querySelector('p').textContent;
+rowProduct.addEventListener('click', (e) => {
+    if (e.target.classList.contains('icon-close')) {
+        const product = e.target.parentElement;
+        const title = product.querySelector('p').textContent;
 
-		allProducts = allProducts.filter(
-			product => product.title !== title
-		);
+        allProducts = allProducts.filter((product) => product.title !== title);
 
-		console.log(allProducts);
+        console.log(allProducts);
 
-		showHTML();
-	}
+        showHTML(allProducts);
+    }
 });
 
+const showHTML = (products) => {
+    if (!products.length) {
+        cartEmpty.classList.remove('hidden');
+        rowProduct.classList.add('hidden');
+        cartTotal.classList.add('hidden');
+    } else {
+        cartEmpty.classList.add('hidden');
+        rowProduct.classList.remove('hidden');
+        cartTotal.classList.remove('hidden');
+    }
 
-const showHTML = () => {
-	if (!allProducts.length) {
-		cartEmpty.classList.remove('hidden');
-		rowProduct.classList.add('hidden');
-		cartTotal.classList.add('hidden');
-	} else {
-		cartEmpty.classList.add('hidden');
-		rowProduct.classList.remove('hidden');
-		cartTotal.classList.remove('hidden');
-	}
+    rowProduct.innerHTML = '';
 
-	
-	rowProduct.innerHTML = '';
+    let total = 0;
+    let totalOfProducts = 0;
 
-	let total = 0;
-	let totalOfProducts = 0;
+    products.forEach((product) => {
+        const containerProduct = document.createElement('div');
+        containerProduct.classList.add('cart-product');
 
-	allProducts.forEach(product => {
-		const containerProduct = document.createElement('div');
-		containerProduct.classList.add('cart-product');
-
-		containerProduct.innerHTML = `
+        containerProduct.innerHTML = `
             <div class="info-cart-product">
                 <span class="cantidad-producto-carrito">${product.quantity}</span>
                 <p class="titulo-producto-carrito">${product.title}</p>
@@ -115,25 +99,45 @@ const showHTML = () => {
             </svg>
         `;
 
-		rowProduct.append(containerProduct);
+        rowProduct.append(containerProduct);
 
-		total =
-			total + parseInt(product.quantity * product.price.slice(1));
-		totalOfProducts = totalOfProducts + product.quantity;
-	});
+        total = total + parseInt(product.quantity * product.price.slice(1));
+        totalOfProducts = totalOfProducts + product.quantity;
+    });
 
-	valorTotal.innerText = `$${total}`;
-	countProducts.innerText = totalOfProducts;
+    valorTotal.innerText = `$${total}`;
+    countProducts.innerText = totalOfProducts;
 };
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded'), () => {
     allProducts = [];
     showHTML();
-    
-    const storedProducts = JSON.parse(localStorage.getItem('products'));
-    if (storedProducts) {
+         const storedProducts = JSON.parse(localStorage.getItem('products'));
+		      if (storedProducts) {
         allProducts = storedProducts;
         showHTML();
     }
-});
+ }
+
+
+const merch = async () => {
+	const response = await fetch("data.json");
+	const data = await response.json();
+
+	data.forEach(producto => {
+		const boton = document.getElementById(`compra${producto.id}`);
+			boton.addEventListener("click", () => {
+					Swal.fire({
+						title: "Gracias por tu compra",
+						icon: "success"
+					});
+				});
+			});
+		}
+merch();
+		
+
+			 
+
+
+
 

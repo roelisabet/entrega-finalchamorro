@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nombre": "CD 1989",
+        "precio": 2000 
+    },
+    { "id": 2,
+    "nombre": "remera 1989",
+    "precio": 4500 },
+    {
+        "id":3,
+        "nombre": "buzo 1989",
+        "precio": 20000
+    },
+    {
+        "id": 4,
+        "nombre": "collar 1989",
+        "precio": 15500 
+    },
+    {
+        "id": 5,
+        "nombre": "lentes 1989",
+        "precio": 1000 
+    }
+
+]
