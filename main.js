@@ -1,148 +1,134 @@
-const btnCart = document.querySelector('.container-icon');
-const containerCartProducts = document.querySelector('.container-cart-products');
 
-btnCart.addEventListener('click', () => {
-    containerCartProducts.classList.toggle('hidden-card');
+
+const shopContent =document.getElementById("shopContent");
+const verCarrito= document.getElementById("verCarrito");
+const modalConteiner =document.getElementById("modalConteiner");
+
+
+
+let carrito = [];
+
+const carritoGuardado = localStorage.getItem("producto");
+if (carritoGuardado) {
+    carrito = JSON.parse(carritoGuardado);
+}
+
+const getProductos = async() =>{
+    const response = await fetch("data.json");
+    const data=  await response.json();
+    
+
+data.forEach((product) =>{
+let content = document.createElement("div");
+content.className ="card";
+
+
+content.innerHTML = `
+<img src ="${product.imagen}">
+<h3> ${product.nombre}</h3>
+<p class ="precio"> ${product.precio} $ </p>
+`;
+shopContent.append(content);
+
+let comprar = document.createElement("button");
+comprar.innerText = "agregar al carrito";
+comprar.className = "comprar"
+
+content.append(comprar);
+
+comprar.addEventListener("click", () => {
+    carrito.push({
+        id: product.id,
+        imagen:product.imagen,
+        nombre:product.nombre,
+        precio:product.precio
+        
+    });
+    saveLocal();
+})
 });
 
-const cartInfo = document.querySelector('.cart-product');
-const rowProduct = document.querySelector('.row-product');
-const productsList = document.getElementById('container');
-let allProducts = [];
-const valorTotal = document.querySelector('.total-pagar');
-const countProducts = document.querySelector('#contador-productos');
-const cartEmpty = document.querySelector('.cart-empty');
-const cartTotal = document.querySelector('.cart-total');
-const lista = document.querySelector('#lista-carrito');
 
-agregarEvento();
+    const pintarCarrito = () => {
 
-function agregarEvento() {
-    productsList.addEventListener('click', comprarMerch)
-    btnCart.addEventListener('click', eliminarMerch)
     
+    modalConteiner.innerHTML ="";
+    modalConteiner.style.display= "flex"
+    const modalHeader = document.createElement("div");
+    modalHeader.className="modal-header"
 
-}
+    modalHeader.innerHTML= `
+    <h1 class ="modal-header-tittle"> carrito </h1>`;
 
-function comprarMerch(e) {
-    e.deFault();
-    if (e.target.classList.contains('btn-add-cart')) {
-        const product = e.target.parentElement;
-        leerProduct(product);
-    }
-}
-
-function leerProduct(product) {
-    const infoProduct = {
-        quantity: 1,
-        title: product.querySelector('h2').textContent,
-        price: product.querySelector('p').textContent,
-    };
-    agregarCarrito(infoProduct);
-}
-
-function eliminarMerch(e){
-    e.deFault();
-    let item,
-        itemId;
-
-        if (e.target.classList.contains("borrar")){
-            e.target.parentElement.parentElement.remove();
-            item = e.target.parentElement.parentElement;
-            itemId = productItem.querySelector('cart-empty');
-
-
-            eliminarItem.localStorage(itemId);
-            eliminarItem.sessionStorage(itemId);
-        }
-};
-
-    function agregarCarrito(product){
-        const column = document.createElement('tr');
-        column.innerHTML= ` 
-        
-        <td>
-        <h2> ${product.nombre}</h2>
-        </td>
-        <td>
-        <p> ${product.precio} </p>
-
-        
-        
-        `
-        lista.appendChild(column);
-
-    }
-
-
-rowProduct.addEventListener('click', (e) => {
-    if (e.target.classList.contains('icon-close')) {
-        const product = e.target.parentElement;
-        const title = product.querySelector('p').textContent;
-
-        allProducts = allProducts.filter((product) => product.title !== title);
-
-
-
-        showHTML(allProducts);
-
-    }
-
-});
-
-const showHTML = (products) => {
-    if (!products.length) {
-        cartEmpty.classList.remove('hidden');
-        rowProduct.classList.add('hidden');
-        cartTotal.classList.add('hidden');
-    } else {
-        cartEmpty.classList.add('hidden');
-        rowProduct.classList.remove('hidden');
-        cartTotal.classList.remove('hidden');
-    }
-
-    rowProduct.innerHTML = '';
-
-    // let total = 0;
-    // let totalOfProducts = 0;
-
-}
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const containerMerch = document.getElementById("container");
-        fetch("data.json")
-            .then(response => response.json())
-            .then(data => {
-                data.forEach((product) => {
-                    const containerProduct = document.createElement('div');
-                    containerProduct.id = `compra${product.id}`;
-                    containerProduct.classList.add('cart-product');
-    
-                    containerProduct.innerHTML = `
-                        <div class="info-cart-product">
-                        <img src="./img/${product.id}.webp >
-                            <span class="cantidad-producto-carrito">${product.quantity}</span>
-                            <p class="titulo-producto-carrito">${product.title}</p>
-                            <span class="precio-producto-carrito">${product.price}</span>
-                        </div>`;
-    
-                    containerMerch.appendChild(containerProduct);
-                });
-            });
+    modalConteiner.append(modalHeader);
+    const modalButton = document.createElement("h1");
+    modalButton.innerText = "X";
+    modalButton.className= "modal-header-button";
+    modalButton.addEventListener("click", ()=>{
+        modalConteiner.style.display="none";
     });
 
+    modalHeader.append(modalButton);
 
 
+    carrito.forEach((product, index) =>{
 
-document.addEventListener('DOMContentLoaded', () => {
 
+    let carritoContent = document.createElement("div")
+    carritoContent.className = "modal-content"
 
-    const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
-    if (storedProducts.length > 0) {
-        allProducts = storedProducts;
-        showHTML(allProducts);
-    }
+    carritoContent.innerHTML= `
+    <img src ="${product.imagen}">
+    <h3> ${product.nombre}</h3>
+    <p> $ ${product.precio}  </p>
+  `;
+  modalConteiner.append(carritoContent);
+
+  let eliminar = document.createElement("span");
+  eliminar.innerText= " Eliminar ❌";
+  eliminar.className = "delete-product";
+  carritoContent.append(eliminar);
+
+ eliminar.addEventListener("click",()=> eliminarProducto (index));
 });
 
 
 
+const total = carrito.reduce((acc,el) => acc + el.precio, 0);
+const totalBuying = document.createElement("div");
+totalBuying.className = "total-content"
+totalBuying.innerHTML= `total a pagar: $ ${total} `;
+modalConteiner.append(totalBuying);
+
+};
+verCarrito.addEventListener("click", pintarCarrito);
+
+
+const eliminarProducto = (index) => {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¡No podrás revertir esto!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, elimínalo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            carrito.splice(index, 1);
+            pintarCarrito();
+            saveLocal();
+            Swal.fire('Eliminado', 'El producto ha sido eliminado', 'success');
+        }
+    });
+};
+
+}
+const saveLocal = () => {
+    console.log("Guardando en localStorage:", carrito);
+    localStorage.setItem("producto", JSON.stringify(carrito));
+};
+
+
+
+getProductos();

@@ -1,28 +1,29 @@
 [
-    {
-        "id": 1,
-        "imagen":"./img/1989cd.webp",
-        "nombre": "CD 1989",
-        "precio": 2000
-    },
-    {
-        "id": 2,
-        "nombre": "remera 1989",
-        "precio": 4500
-    },
-    {
-        "id": 3,
-        "nombre": "buzo 1989",
-        "precio": 20000
-    },
-    {
-        "id": 4,
-        "nombre": "collar 1989",
-        "precio": 15500
-    },
-    {
-        "id": 5,
-        "nombre": "lentes 1989",
-        "precio": 1000
+ {  "id":1,
+    "nombre": "CD 1989",
+    "precio":2000,
+    "imagen":" ./img/1989cd.webp"
+},
+ { "id": 2,
+    "nombre":"remera 1989",
+    "precio": 15000,
+    "imagen":"./img/remera.webp"
+},
+ {  "id": 3,
+    "nombre":"buzo 1989",
+     "precio": 20000,
+     "imagen":"./img/buzo.webp"
+ },
+ {
+    "id": 4,
+    "nombre":"anteojos 1989",
+     "precio": 1500,
+     "imagen":"./img/lentes.webp"
+ },
+{   "id":5,
+    "nombre":"collar 1989",
+     "precio": 1900,
+     "imagen":"./img/collar.webp"
     }
-]
+    
+ ]
